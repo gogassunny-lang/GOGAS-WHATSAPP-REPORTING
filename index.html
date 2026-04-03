@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GOGAS Daily Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0b141a;
+    --chat-bg: #0b141a;
+    --bubble-out: #005c4b;
+    --bubble-out-lighter: #006d5b;
+    --bubble-in: #1f2c34;
+    --header-bg: #202c33;
+    --accent: #00a884;
+    --accent-light: #d9fdd3;
+    --text: #e9edef;
+    --text-dim: rgba(233,237,239,0.55);
+    --text-faint: rgba(233,237,239,0.3);
+    --input-line: rgba(0,168,132,0.5);
+    --input-active: #00a884;
+    --danger: #ea4335;
+    --separator: rgba(255,255,255,0.06);
+    --auto-color: #25d366;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--chat-bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M20 20h8v2h-8zM60 20h8v2h-8zM100 20h8v2h-8zM140 20h8v2h-8zM180 20h8v2h-8zM220 20h8v2h-8zM40 50h8v2h-8zM80 50h8v2h-8zM120 50h8v2h-8zM160 50h8v2h-8zM200 50h8v2h-8zM240 50h8v2h-8zM20 80h8v2h-8zM60 80h8v2h-8zM100 80h8v2h-8zM140 80h8v2h-8zM180 80h8v2h-8zM220 80h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ── LOGIN ── */
+  .login-screen {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .login-avatar {
+    width: 88px; height: 88px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 700; color: #fff;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .login-avatar::after {
+    content: '';
+    position: absolute; inset: -5px;
+    border: 2px solid rgba(0,168,132,0.3);
+    border-radius: 50%;
+  }
+
+  .login-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .login-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+
+  .login-card {
+    width: 100%; max-width: 360px;
+    background: var(--bubble-in);
+    border-radius: 18px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .login-card label {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    display: block; margin-bottom: 6px;
+  }
+
+  .login-input {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px; color: var(--text);
+    font-family: inherit; outline: none;
+    margin-bottom: 16px;
+    transition: border 0.2s;
+  }
+
+  .login-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,168,132,0.12);
+  }
+
+  .login-input::placeholder { color: var(--text-faint); }
+
+  .remember-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+    font-size: 13px; color: var(--text-dim);
+    cursor: pointer; user-select: none;
+  }
+
+  .remember-row input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+  .btn-login {
+    width: 100%; padding: 14px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 24px;
+    font-size: 15px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+
+  .btn-login:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* ── CHAT HEADER ── */
+  .chat-header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--header-bg);
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .chat-avatar {
+    width: 38px; height: 38px;
+    background: var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .chat-info { flex: 1; }
+  .chat-name { font-size: 15px; font-weight: 600; }
+  .chat-status { font-size: 11px; color: var(--accent); margin-top: 1px; }
+
+  .chat-actions { display: flex; gap: 4px; }
+
+  .btn-act {
+    width: 34px; height: 34px;
+    border-radius: 50%; background: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-dim); font-size: 11px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .btn-act:active { background: rgba(255,255,255,0.05); }
+  .btn-act.red { color: var(--danger); border-color: rgba(234,67,53,0.25); }
+
+  /* ── CHAT BODY ── */
+  .chat-body {
+    padding: 8px 10px 110px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  /* ── MESSAGE BUBBLES ── */
+  .msg {
+    max-width: 92%;
+    border-radius: 10px;
+    padding: 7px 10px 4px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.55;
+    animation: msgIn 0.2s ease;
+  }
+
+  .msg-out {
+    background: var(--bubble-out);
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+
+  .msg-in {
+    background: var(--bubble-in);
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+  }
+
+  .msg-time-stamp {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-align: right;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: flex-end; gap: 3px;
+  }
+
+  .msg-time-stamp .ticks { color: #53bdeb; font-size: 13px; }
+
+  /* ── REPORT TEMPLATE (the magic) ── */
+  .report-bubble {
+    max-width: 96%;
+    align-self: flex-end;
+    background: var(--bubble-out);
+    border-radius: 10px 10px 3px 10px;
+    padding: 10px 12px 6px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    animation: msgIn 0.3s ease;
+    position: relative;
+  }
+
+  .report-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+
+  .sep {
+    border: none;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    margin: 5px 0;
+  }
+
+  .section-head {
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--accent-light);
+    text-align: center;
+    margin: 2px 0 4px;
+  }
+
+  .report-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin: 2px 0;
+    min-height: 28px;
+  }
+
+  .report-label {
+    color: rgba(233,237,239,0.75);
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .report-colon {
+    color: rgba(233,237,239,0.35);
+    flex-shrink: 0;
+    margin-right: 2px;
+  }
+
+  /* Tappable blank — the core innovation */
+  .tap-input {
+    background: none;
+    border: none;
+    border-bottom: 1.5px dashed var(--input-line);
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 2px 4px;
+    outline: none;
+    min-width: 60px;
+    flex: 1;
+    max-width: 140px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .tap-input:focus {
+    border-bottom-color: var(--input-active);
+    border-bottom-style: solid;
+    background: rgba(0,168,132,0.08);
+    border-radius: 4px 4px 0 0;
+  }
+
+  .tap-input::placeholder { color: var(--text-faint); font-weight: 400; font-size: 12px; }
+
+  .tap-input.wide { max-width: 200px; }
+  .tap-input.narrow { max-width: 80px; }
+
+  /* Auto-calculated inline */
+  .auto-val {
+    color: var(--auto-color);
+    font-weight: 600;
+    font-size: 14px;
+    min-width: 60px;
+    padding: 2px 4px;
+    border-bottom: 1.5px solid rgba(37,211,102,0.25);
+    display: inline-block;
+  }
+
+  .auto-tag {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--auto-color);
+    opacity: 0.6;
+    vertical-align: super;
+    margin-left: 2px;
+  }
+
+  .na-text {
+    color: var(--text-faint);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  /* ── SUCCESS BUBBLE ── */
+  .success-msg {
+    display: none;
+    align-self: flex-start;
+    background: var(--bubble-in);
+    border-radius: 10px 10px 10px 3px;
+    padding: 12px 16px;
+    animation: msgIn 0.3s ease;
+  }
+
+  .success-msg.show { display: block; }
+
+  .success-inner {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .success-circle {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .success-circle svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 3; fill: none; }
+
+  .success-label { font-weight: 600; color: var(--accent); font-size: 14px; }
+  .success-detail { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
+  .btn-edit-chat {
+    margin-top: 8px;
+    padding: 6px 16px;
+    border: 1px solid rgba(0,168,132,0.4);
+    background: none; border-radius: 16px;
+    color: var(--accent); font-size: 12px;
+    font-weight: 600; font-family: inherit;
+    cursor: pointer;
+  }
+
+  .submitted .tap-input {
+    pointer-events: none; opacity: 0.65;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255,255,255,0.08);
+  }
+
+  /* ── BOTTOM BAR ── */
+  .send-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--header-bg);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+    z-index: 100;
+  }
+
+  .send-bar-text {
+    flex: 1;
+    background: var(--bubble-in);
+    border-radius: 22px;
+    padding: 10px 18px;
+    font-size: 14px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .btn-send {
+    width: 46px; height: 46px;
+    background: var(--accent);
+    border: none; border-radius: 50%;
+    color: #fff; font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .btn-send:active { transform: scale(0.9); }
+  .btn-send:disabled { background: #2a3942; cursor: not-allowed; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-avatar">G</div>
+  <div class="login-title">GOGAS Daily Report</div>
+  <div class="login-sub">Enter your station credentials</div>
+  <div class="login-card">
+    <label>ERP Code</label>
+    <input class="login-input" type="text" id="erpCode" placeholder="e.g. GG-MH-0042">
+    <label>Passkey</label>
+    <input class="login-input" type="password" id="passkey" placeholder="Enter passkey">
+    <label class="remember-row">
+      <input type="checkbox" id="rememberMe" checked> Remember me
+    </label>
+    <button class="btn-login" onclick="handleLogin()">Continue</button>
+  </div>
+</div>
+
+<!-- ═══ CHAT ═══ -->
+<div class="form-screen" id="formScreen" style="display:none;">
+
+  <div class="chat-header">
+    <div class="chat-avatar">G</div>
+    <div class="chat-info">
+      <div class="chat-name">GOGAS Report Bot</div>
+      <div class="chat-status" id="chatStatus">online</div>
+    </div>
+    <div class="chat-actions">
+      <button class="btn-act" onclick="resetForm()" title="Reset">R</button>
+      <button class="btn-act red" onclick="logout()" title="Logout">X</button>
+    </div>
+  </div>
+
+  <div class="chat-body" id="chatBody">
+
+    <!-- Bot greeting -->
+    <div class="msg msg-in">
+      Fill in the blanks below and tap send. Auto fields will calculate themselves.
+      <div class="msg-time-stamp" id="greetTime">--:--</div>
+    </div>
+
+    <!-- Success message (hidden) -->
+    <div class="success-msg" id="successMsg">
+      <div class="success-inner">
+        <div class="success-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div>
+          <div class="success-label">Report submitted!</div>
+          <div class="success-detail" id="successDetail">Saved at --:--</div>
+        </div>
+      </div>
+      <button class="btn-edit-chat" onclick="enableEdit()">Tap to edit</button>
+    </div>
+
+    <!-- ═══ THE TAPPABLE REPORT TEMPLATE ═══ -->
+    <div class="report-bubble" id="reportBubble">
+
+      <div class="report-title">GOGAS DAILY REPORT</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">ERP Code</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="erpDisplay" style="color:var(--text);border:none;font-weight:400;">--</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Station Name</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input wide" type="text" id="stationName" placeholder="tap to enter">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Shift 1 Sales Ltrs</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="shift1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Shift 2 Sales Ltrs</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="shift2" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Shift 3 Sales Ltrs</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="shift3" placeholder="0.00" oninput="calcAll()">
+      </div>
+
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">Date</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" id="reportDate" placeholder="DD">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Month</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input" type="text" id="reportMonth" placeholder="Month">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Year</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" id="reportYear" placeholder="YYYY">
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">OPENING</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">A1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="openA1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">B1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="openB1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">A2</span>
+        <span class="report-colon">:</span>
+        <span class="na-text">NA</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">B2</span>
+        <span class="report-colon">:</span>
+        <span class="na-text">NA</span>
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">CLOSING</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">A1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="closeA1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">B1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="closeB1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">A2</span>
+        <span class="report-colon">:</span>
+        <span class="na-text">NA</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">B2</span>
+        <span class="report-colon">:</span>
+        <span class="na-text">NA</span>
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">SALES</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">Total Sale</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="totalSale">0.00</span><span class="auto-tag">auto</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Rtn Testing</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="rtnTesting" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Free Sale</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="freeSale" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Net Sale</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="netSale">0.00</span><span class="auto-tag">auto</span>
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">RATE</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">RSP - DU1 - N1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="rspDU1N1" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">RSP - DU1 - N2</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="rspDU1N2" placeholder="0.00">
+      </div>
+      <div class="report-row">
+        <span class="report-label">RSP - DU2 - N1</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="rspDU2N1" placeholder="0.00">
+      </div>
+      <div class="report-row">
+        <span class="report-label">RSP - DU2 - N2</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="rspDU2N2" placeholder="0.00">
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">PAYMENTS</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">Previous Cash Bal</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="prevCash" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Total Sales Amt</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="totalSalesAmt">0.00</span><span class="auto-tag">auto</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Card Sale</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="cardSale" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Paytm Sale</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="paytmSale" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Free Sales Amt</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="freeSalesAmt" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Cash Sale Amt</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="cashSaleAmt">0.00</span><span class="auto-tag">auto</span>
+      </div>
+      <div class="report-row">
+        <span class="report-label">Bank Deposit</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="bankDeposit" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Cash In Hand</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="cashInHand">0.00</span><span class="auto-tag">auto</span>
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">STOCK</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">Dip Reading (mm)</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="1" id="dipReading" placeholder="0">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Stock in Ltrs</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="stockLtrs" placeholder="0.00">
+      </div>
+
+      <hr class="sep">
+      <div class="section-head">DG METER</div>
+      <hr class="sep">
+
+      <div class="report-row">
+        <span class="report-label">Opening DG</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="openDG" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Closing DG</span>
+        <span class="report-colon">:</span>
+        <input class="tap-input narrow" type="number" step="0.01" id="closeDG" placeholder="0.00" oninput="calcAll()">
+      </div>
+      <div class="report-row">
+        <span class="report-label">Hours</span>
+        <span class="report-colon">:</span>
+        <span class="auto-val" id="dgHours">0.00</span><span class="auto-tag">auto</span>
+      </div>
+
+      <hr class="sep">
+
+      <div class="msg-time-stamp">
+        <span id="reportTime">--:--</span>
+        <span class="ticks" id="tickMark">&#10003;</span>
+      </div>
+
+    </div>
+    <!-- end report bubble -->
+
+  </div>
+
+  <!-- Send bar -->
+  <div class="send-bar">
+    <div class="send-bar-text" id="sendBarText" onclick="scrollToEmpty()">Tap to fill report above</div>
+    <button class="btn-send" id="sendBtn" onclick="handleSubmit()">&#10148;</button>
+  </div>
+
+</div>
+
+<script>
+  let isSubmitted = false;
+  let currentERP = '';
+
+  function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+  function s(id, val) { document.getElementById(id).textContent = val.toFixed(2); }
+
+  function calcAll() {
+    const totalSale = (v('closeA1') - v('openA1')) + (v('closeB1') - v('openB1'));
+    s('totalSale', totalSale);
+
+    const netSale = totalSale - v('rtnTesting') - v('freeSale');
+    s('netSale', netSale);
+
+    const rate = v('rspDU1N1');
+    const totalSalesAmt = netSale * rate;
+    s('totalSalesAmt', totalSalesAmt);
+
+    const cashSaleAmt = totalSalesAmt - v('cardSale') - v('paytmSale') - v('freeSalesAmt');
+    s('cashSaleAmt', cashSaleAmt);
+
+    const cashInHand = v('prevCash') + cashSaleAmt - v('bankDeposit');
+    s('cashInHand', cashInHand);
+
+    const dgHours = v('closeDG') - v('openDG');
+    s('dgHours', dgHours);
+  }
+
+  function scrollToEmpty() {
+    const inputs = document.querySelectorAll('.tap-input');
+    for (const inp of inputs) {
+      if (!inp.value) {
+        inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => inp.focus(), 400);
+        return;
+      }
+    }
+  }
+
+  function timeNow() {
+    return new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function prefillDate() {
+    const now = new Date();
+    document.getElementById('reportDate').value = now.getDate();
+    document.getElementById('reportMonth').value = now.toLocaleString('en', { month: 'long' });
+    document.getElementById('reportYear').value = now.getFullYear();
+  }
+
+  // ── Login ──
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('gogas_erp');
+    const savedP = localStorage.getItem('gogas_pass');
+    if (saved && savedP) {
+      currentERP = saved;
+      showForm();
+    }
+  });
+
+  function handleLogin() {
+    const erp = document.getElementById('erpCode').value.trim();
+    const pass = document.getElementById('passkey').value.trim();
+    if (!erp || !pass) return;
+    currentERP = erp;
+    if (document.getElementById('rememberMe').checked) {
+      localStorage.setItem('gogas_erp', erp);
+      localStorage.setItem('gogas_pass', pass);
+    }
+    showForm();
+  }
+
+  function showForm() {
+    document.getElementById('erpDisplay').textContent = currentERP;
+    document.getElementById('chatStatus').textContent = currentERP + ' connected';
+    document.getElementById('greetTime').textContent = timeNow();
+    document.getElementById('reportTime').textContent = timeNow();
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('formScreen').style.display = 'block';
+    prefillDate();
+  }
+
+  // ── Submit ──
+  function handleSubmit() {
+    if (isSubmitted) return;
+    isSubmitted = true;
+    document.getElementById('reportBubble').classList.add('submitted');
+    document.getElementById('tickMark').innerHTML = '&#10003;&#10003;';
+    document.getElementById('successDetail').textContent = 'Saved at ' + timeNow();
+    document.getElementById('successMsg').classList.add('show');
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('sendBtn').disabled = true;
+    document.getElementById('sendBarText').textContent = 'Report submitted';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const data = collectFormData();
+    console.log('Report:', JSON.stringify(data, null, 2));
+  }
+
+  function enableEdit() {
+    isSubmitted = false;
+    document.getElementById('reportBubble').classList.remove('submitted');
+    document.getElementById('tickMark').innerHTML = '&#10003;';
+    document.getElementById('successMsg').classList.remove('show');
+    document.getElementById('successMsg').style.display = 'none';
+    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('sendBarText').textContent = 'Tap to fill report above';
+  }
+
+  function resetForm() {
+    if (isSubmitted && !confirm('Clear data for new day?')) return;
+    document.querySelectorAll('.tap-input').forEach(i => i.value = '');
+    document.querySelectorAll('.auto-val').forEach(el => {
+      if (el.id !== 'erpDisplay') el.textContent = '0.00';
+    });
+    enableEdit();
+    prefillDate();
+    document.getElementById('reportTime').textContent = timeNow();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function logout() {
+    localStorage.removeItem('gogas_erp');
+    localStorage.removeItem('gogas_pass');
+    currentERP = '';
+    document.getElementById('formScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('erpCode').value = '';
+    document.getElementById('passkey').value = '';
+    resetForm();
+  }
+
+  function collectFormData() {
+    return {
+      erp_code: currentERP,
+      station_name: document.getElementById('stationName').value,
+      date: v('reportDate'), month: document.getElementById('reportMonth').value, year: v('reportYear'),
+      shift1: v('shift1'), shift2: v('shift2'), shift3: v('shift3'),
+      open_a1: v('openA1'), open_b1: v('openB1'),
+      close_a1: v('closeA1'), close_b1: v('closeB1'),
+      total_sale: parseFloat(document.getElementById('totalSale').textContent) || 0,
+      rtn_testing: v('rtnTesting'), free_sale: v('freeSale'),
+      net_sale: parseFloat(document.getElementById('netSale').textContent) || 0,
+      rsp_du1_n1: v('rspDU1N1'), rsp_du1_n2: v('rspDU1N2'),
+      rsp_du2_n1: v('rspDU2N1'), rsp_du2_n2: v('rspDU2N2'),
+      prev_cash: v('prevCash'),
+      total_sales_amt: parseFloat(document.getElementById('totalSalesAmt').textContent) || 0,
+      card_sale: v('cardSale'), paytm_sale: v('paytmSale'),
+      free_sales_amt: v('freeSalesAmt'),
+      cash_sale_amt: parseFloat(document.getElementById('cashSaleAmt').textContent) || 0,
+      bank_deposit: v('bankDeposit'),
+      cash_in_hand: parseFloat(document.getElementById('cashInHand').textContent) || 0,
+      dip_reading: v('dipReading'), stock_ltrs: v('stockLtrs'),
+      open_dg: v('openDG'), close_dg: v('closeDG'),
+      dg_hours: parseFloat(document.getElementById('dgHours').textContent) || 0,
+      submitted_at: new Date().toISOString()
+    };
+  }
+</script>
+
+</body>
+</html>
