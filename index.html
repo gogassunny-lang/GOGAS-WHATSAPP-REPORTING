@@ -4,859 +4,422 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>GOGAS Daily Report</title>
+<meta property="og:title" content="GOGAS Daily Report">
+<meta property="og:description" content="Tap to submit your daily station report">
+<meta name="description" content="Submit your GOGAS daily station report">
+<meta name="theme-color" content="#008069">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2f5;--chat-bg:#efeae2;--white:#fff;--accent:#008069;--text:#111b21;--text-dim:rgba(17,27,33,0.55);--text-faint:rgba(17,27,33,0.25);--input-line:rgba(0,128,105,0.4);--label:#54656f;--bubble-out:#d9fdd3;--bubble-in:#fff;--danger:#e74c3c;--shadow:0 1px 3px rgba(0,0,0,0.08)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
 
-  :root {
-    --bg: #0b141a;
-    --chat-bg: #0b141a;
-    --bubble-out: #005c4b;
-    --bubble-out-lighter: #006d5b;
-    --bubble-in: #1f2c34;
-    --header-bg: #202c33;
-    --accent: #00a884;
-    --accent-light: #d9fdd3;
-    --text: #e9edef;
-    --text-dim: rgba(233,237,239,0.55);
-    --text-faint: rgba(233,237,239,0.3);
-    --input-line: rgba(0,168,132,0.5);
-    --input-active: #00a884;
-    --danger: #ea4335;
-    --separator: rgba(255,255,255,0.06);
-    --auto-color: #25d366;
-  }
+/* ── Centered container for desktop ── */
+.app-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,0.08)}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--chat-bg);
-    color: var(--text);
-    min-height: 100vh;
-    -webkit-tap-highlight-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.012'%3E%3Cpath d='M20 20h8v2h-8zM60 20h8v2h-8zM100 20h8v2h-8zM140 20h8v2h-8zM180 20h8v2h-8zM220 20h8v2h-8zM40 50h8v2h-8zM80 50h8v2h-8zM120 50h8v2h-8zM160 50h8v2h-8zM200 50h8v2h-8zM240 50h8v2h-8zM20 80h8v2h-8zM60 80h8v2h-8zM100 80h8v2h-8zM140 80h8v2h-8zM180 80h8v2h-8zM220 80h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E");
-  }
+.screen{display:none;min-height:100vh;flex-direction:column;animation:fadeIn .3s ease}
+.screen.active{display:flex}
+.hdr{background:var(--accent);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.hdr-icon{width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0}
+.hdr-icon.click{cursor:pointer}
+.hdr-t{font-size:16px;font-weight:600;color:#fff}
+.hdr-s{font-size:11px;color:rgba(255,255,255,0.7);margin-top:1px}
+.hdr-btn{background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85);padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
+.hdr-btn:active{background:rgba(255,255,255,0.1)}
+.hdr-btn.red{border-color:rgba(255,100,100,0.4);color:#ffaaaa}
 
-  /* ── LOGIN ── */
-  .login-screen {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 24px;
-    animation: fadeIn 0.4s ease;
-  }
+/* Login */
+.login-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:14px}
+.login-av{width:76px;height:76px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#fff}
+.login-h{font-size:20px;font-weight:700}
+.login-p{font-size:13px;color:var(--text-dim)}
+.card{width:100%;max-width:360px;background:var(--white);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.card label{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:6px}
+.inp{width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;font-size:15px;font-family:inherit;color:var(--text);outline:none;margin-bottom:16px;background:var(--bg);transition:border .2s}
+.inp:focus{border-color:var(--accent)}
+.inp::placeholder{color:var(--text-faint)}
+.chk-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:13px;color:var(--text-dim);cursor:pointer;user-select:none}
+.chk-row input{accent-color:var(--accent);width:16px;height:16px}
+.btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:24px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn:active{opacity:.9;transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:wait}
+.err-msg{color:var(--danger);font-size:13px;text-align:center;margin-top:8px;display:none}
+.load-msg{color:var(--accent);font-size:13px;text-align:center;margin-top:8px;display:none}
 
-  .login-avatar {
-    width: 88px; height: 88px;
-    background: var(--accent);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 36px; font-weight: 700; color: #fff;
-    margin-bottom: 16px;
-    position: relative;
-  }
+/* Date */
+.date-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:14px}
+.date-h{font-size:18px;font-weight:700;text-align:center}
+.date-info{font-size:13px;color:var(--accent);font-weight:600}
+.date-state{font-size:12px;color:var(--text-dim)}
+.date-inp{width:100%;padding:14px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;font-size:16px;font-family:inherit;color:var(--text);outline:none;background:var(--bg)}
+.date-inp:focus{border-color:var(--accent)}
+.link-btn{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit;text-decoration:underline}
+.link-btn.red{color:var(--danger)}
 
-  .login-avatar::after {
-    content: '';
-    position: absolute; inset: -5px;
-    border: 2px solid rgba(0,168,132,0.3);
-    border-radius: 50%;
-  }
+/* Report */
+.report-body{flex:1;padding:8px 10px 110px;background:var(--chat-bg);background-image:url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.025'%3E%3Cpath d='M20 20h8v2h-8zM60 20h8v2h-8zM100 20h8v2h-8zM140 20h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E")}
+.dbadge{text-align:center;padding:6px 16px;background:rgba(0,128,105,0.08);border-radius:16px;font-size:12px;color:var(--accent);font-weight:600;width:fit-content;margin:8px auto}
+.bot-msg{max-width:88%;background:var(--bubble-in);border-radius:10px 10px 10px 3px;padding:8px 12px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,0.06);margin-bottom:6px}
+.bot-msg .ts{font-size:11px;color:var(--text-faint);text-align:right;margin-top:2px}
 
-  .login-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-  .login-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+/* Report bubble - CENTERED */
+.rb{width:100%;background:var(--bubble-out);border-radius:10px;padding:10px 12px 6px;font-size:13.5px;line-height:1.7;box-shadow:0 1px 1px rgba(0,0,0,0.06)}
+.rt{text-align:center;font-weight:700;font-size:13px;letter-spacing:.5px;color:var(--accent);margin-bottom:4px}
+.sep{border:none;border-top:1px dashed rgba(0,0,0,0.1);margin:5px 0}
+.sh{font-weight:700;font-size:12px;color:var(--accent);text-align:center;margin:2px 0 4px}
+.rr{display:flex;align-items:baseline;gap:4px;margin:2px 0;min-height:28px}
+.rl{color:var(--label);font-size:13px;white-space:nowrap;flex-shrink:0;font-weight:500}
+.rc{color:var(--text-faint);flex-shrink:0;margin-right:2px}
+.ti{background:none;border:none;border-bottom:1.5px dashed var(--input-line);color:var(--text);font-size:14px;font-family:inherit;font-weight:600;padding:2px 4px;outline:none;min-width:60px;flex:1;max-width:140px;transition:border-color .2s,background .2s}
+.ti:focus{border-bottom-color:var(--accent);border-bottom-style:solid;background:rgba(0,128,105,0.06);border-radius:4px 4px 0 0}
+.ti::placeholder{color:var(--text-faint);font-weight:400;font-size:12px}
+.ti.n{max-width:80px}
+.av{color:var(--accent);font-weight:700;font-size:14px;min-width:60px;padding:2px 4px;border-bottom:1.5px solid rgba(0,128,105,0.2);display:inline-block}
+.at{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);opacity:.5;vertical-align:super;margin-left:2px}
+.na{color:var(--text-faint);font-size:12px;font-style:italic}
+.fixed-val{color:var(--text);font-weight:500;font-size:14px;border:none}
+.stamp{font-size:11px;color:var(--text-faint);text-align:right;margin-top:2px;display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.stamp .tk{color:#53bdeb;font-size:13px}
 
-  .login-card {
-    width: 100%; max-width: 360px;
-    background: var(--bubble-in);
-    border-radius: 18px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
+/* Success */
+.sbar{background:var(--white);border-radius:10px;padding:12px 16px;margin:8px 0;box-shadow:var(--shadow);display:none;align-items:center;gap:10px}
+.sbar.show{display:flex}
+.sdot{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sdot svg{width:16px;height:16px;stroke:#fff;stroke-width:3;fill:none}
+.sinfo{flex:1}
+.stitle{font-weight:600;color:var(--accent);font-size:13px}
+.ssub{font-size:11px;color:var(--text-dim)}
+.btn-e{padding:6px 14px;border:1px solid rgba(0,128,105,0.35);background:none;border-radius:14px;color:var(--accent);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
+.submitted .ti{pointer-events:none;opacity:.6;border-bottom-color:rgba(0,0,0,0.08);border-bottom-style:solid}
 
-  .login-card label {
-    font-size: 11px; font-weight: 600; color: var(--accent);
-    text-transform: uppercase; letter-spacing: 0.8px;
-    display: block; margin-bottom: 6px;
-  }
+/* Send bar - constrained to app width */
+.send-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg);border-top:1px solid rgba(0,0,0,0.06);padding:8px 10px;display:flex;align-items:center;gap:8px;z-index:100}
+.sbt{flex:1;background:#fff;border-radius:22px;padding:10px 18px;font-size:14px;color:var(--text-dim);cursor:pointer;user-select:none;border:1px solid rgba(0,0,0,0.06)}
+.btn-send{width:46px;height:46px;background:var(--accent);border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.btn-send:active{transform:scale(.9)}
+.btn-send:disabled{background:#b0b0b0;cursor:not-allowed}
 
-  .login-input {
-    width: 100%;
-    background: rgba(0,0,0,0.3);
-    border: 1.5px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 13px 16px;
-    font-size: 15px; color: var(--text);
-    font-family: inherit; outline: none;
-    margin-bottom: 16px;
-    transition: border 0.2s;
-  }
+/* Tracker */
+.tracker-body{flex:1;padding:16px;overflow-y:auto}
+.tracker-summary{background:var(--white);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px;display:flex;gap:12px;justify-content:center}
+.tracker-stat{text-align:center;flex:1}
+.tracker-num{font-size:28px;font-weight:700}
+.tracker-num.green{color:var(--accent)}
+.tracker-num.red{color:var(--danger)}
+.tracker-num.blue{color:#2563eb}
+.tracker-lbl{font-size:11px;color:var(--text-dim);margin-top:2px}
+.tracker-date-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.tracker-date-row input{flex:1;padding:10px 14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:var(--white)}
+.tracker-date-row button{padding:10px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.state-card{background:var(--white);border-radius:12px;margin-bottom:8px;box-shadow:var(--shadow);overflow:hidden}
+.state-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.state-name{font-weight:600;font-size:14px}
+.state-counts{display:flex;gap:12px;font-size:12px}
+.state-posted{color:var(--accent);font-weight:600}
+.state-missing{color:var(--danger);font-weight:600}
+.state-details{display:none;padding:0 16px 12px;font-size:12px}
+.state-details.open{display:block}
+.missing-item{padding:4px 0;color:var(--text-dim);border-bottom:1px solid rgba(0,0,0,0.04)}
+.missing-item:last-child{border:none}
+.tracker-loading{text-align:center;padding:40px;color:var(--text-dim);font-size:14px}
+.progress-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease}
 
-  .login-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(0,168,132,0.12);
-  }
+/* Desktop background */
+@media(min-width:481px){
+  body{background:#d1d7db}
+}
 
-  .login-input::placeholder { color: var(--text-faint); }
-
-  .remember-row {
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 20px;
-    font-size: 13px; color: var(--text-dim);
-    cursor: pointer; user-select: none;
-  }
-
-  .remember-row input { accent-color: var(--accent); width: 16px; height: 16px; }
-
-  .btn-login {
-    width: 100%; padding: 14px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 24px;
-    font-size: 15px; font-weight: 600;
-    font-family: inherit; cursor: pointer;
-  }
-
-  .btn-login:active { opacity: 0.85; transform: scale(0.98); }
-
-  /* ── CHAT HEADER ── */
-  .chat-header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--header-bg);
-    padding: 10px 12px;
-    display: flex; align-items: center; gap: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .chat-avatar {
-    width: 38px; height: 38px;
-    background: var(--accent); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 15px; color: #fff;
-    flex-shrink: 0;
-  }
-
-  .chat-info { flex: 1; }
-  .chat-name { font-size: 15px; font-weight: 600; }
-  .chat-status { font-size: 11px; color: var(--accent); margin-top: 1px; }
-
-  .chat-actions { display: flex; gap: 4px; }
-
-  .btn-act {
-    width: 34px; height: 34px;
-    border-radius: 50%; background: none;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-dim); font-size: 11px; font-weight: 700;
-    cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .btn-act:active { background: rgba(255,255,255,0.05); }
-  .btn-act.red { color: var(--danger); border-color: rgba(234,67,53,0.25); }
-
-  /* ── CHAT BODY ── */
-  .chat-body {
-    padding: 8px 10px 110px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-
-  /* ── MESSAGE BUBBLES ── */
-  .msg {
-    max-width: 92%;
-    border-radius: 10px;
-    padding: 7px 10px 4px;
-    position: relative;
-    font-size: 14px;
-    line-height: 1.55;
-    animation: msgIn 0.2s ease;
-  }
-
-  .msg-out {
-    background: var(--bubble-out);
-    align-self: flex-end;
-    border-bottom-right-radius: 3px;
-  }
-
-  .msg-in {
-    background: var(--bubble-in);
-    align-self: flex-start;
-    border-bottom-left-radius: 3px;
-  }
-
-  .msg-time-stamp {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    text-align: right;
-    margin-top: 2px;
-    display: flex; align-items: center; justify-content: flex-end; gap: 3px;
-  }
-
-  .msg-time-stamp .ticks { color: #53bdeb; font-size: 13px; }
-
-  /* ── REPORT TEMPLATE (the magic) ── */
-  .report-bubble {
-    max-width: 96%;
-    align-self: flex-end;
-    background: var(--bubble-out);
-    border-radius: 10px 10px 3px 10px;
-    padding: 10px 12px 6px;
-    font-size: 13.5px;
-    line-height: 1.7;
-    animation: msgIn 0.3s ease;
-    position: relative;
-  }
-
-  .report-title {
-    text-align: center;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    color: var(--accent-light);
-    margin-bottom: 4px;
-  }
-
-  .sep {
-    border: none;
-    border-top: 1px dashed rgba(255,255,255,0.1);
-    margin: 5px 0;
-  }
-
-  .section-head {
-    font-weight: 700;
-    font-size: 12px;
-    color: var(--accent-light);
-    text-align: center;
-    margin: 2px 0 4px;
-  }
-
-  .report-row {
-    display: flex;
-    align-items: baseline;
-    gap: 4px;
-    margin: 2px 0;
-    min-height: 28px;
-  }
-
-  .report-label {
-    color: rgba(233,237,239,0.75);
-    font-size: 13px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .report-colon {
-    color: rgba(233,237,239,0.35);
-    flex-shrink: 0;
-    margin-right: 2px;
-  }
-
-  /* Tappable blank — the core innovation */
-  .tap-input {
-    background: none;
-    border: none;
-    border-bottom: 1.5px dashed var(--input-line);
-    color: #fff;
-    font-size: 14px;
-    font-family: inherit;
-    font-weight: 500;
-    padding: 2px 4px;
-    outline: none;
-    min-width: 60px;
-    flex: 1;
-    max-width: 140px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .tap-input:focus {
-    border-bottom-color: var(--input-active);
-    border-bottom-style: solid;
-    background: rgba(0,168,132,0.08);
-    border-radius: 4px 4px 0 0;
-  }
-
-  .tap-input::placeholder { color: var(--text-faint); font-weight: 400; font-size: 12px; }
-
-  .tap-input.wide { max-width: 200px; }
-  .tap-input.narrow { max-width: 80px; }
-
-  /* Auto-calculated inline */
-  .auto-val {
-    color: var(--auto-color);
-    font-weight: 600;
-    font-size: 14px;
-    min-width: 60px;
-    padding: 2px 4px;
-    border-bottom: 1.5px solid rgba(37,211,102,0.25);
-    display: inline-block;
-  }
-
-  .auto-tag {
-    font-size: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--auto-color);
-    opacity: 0.6;
-    vertical-align: super;
-    margin-left: 2px;
-  }
-
-  .na-text {
-    color: var(--text-faint);
-    font-size: 12px;
-    font-style: italic;
-  }
-
-  /* ── SUCCESS BUBBLE ── */
-  .success-msg {
-    display: none;
-    align-self: flex-start;
-    background: var(--bubble-in);
-    border-radius: 10px 10px 10px 3px;
-    padding: 12px 16px;
-    animation: msgIn 0.3s ease;
-  }
-
-  .success-msg.show { display: block; }
-
-  .success-inner {
-    display: flex; align-items: center; gap: 10px;
-  }
-
-  .success-circle {
-    width: 36px; height: 36px;
-    background: var(--accent);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .success-circle svg { width: 18px; height: 18px; stroke: #fff; stroke-width: 3; fill: none; }
-
-  .success-label { font-weight: 600; color: var(--accent); font-size: 14px; }
-  .success-detail { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
-
-  .btn-edit-chat {
-    margin-top: 8px;
-    padding: 6px 16px;
-    border: 1px solid rgba(0,168,132,0.4);
-    background: none; border-radius: 16px;
-    color: var(--accent); font-size: 12px;
-    font-weight: 600; font-family: inherit;
-    cursor: pointer;
-  }
-
-  .submitted .tap-input {
-    pointer-events: none; opacity: 0.65;
-    border-bottom-style: solid;
-    border-bottom-color: rgba(255,255,255,0.08);
-  }
-
-  /* ── BOTTOM BAR ── */
-  .send-bar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--header-bg);
-    border-top: 1px solid rgba(255,255,255,0.04);
-    padding: 8px 10px;
-    display: flex; align-items: center; gap: 8px;
-    z-index: 100;
-  }
-
-  .send-bar-text {
-    flex: 1;
-    background: var(--bubble-in);
-    border-radius: 22px;
-    padding: 10px 18px;
-    font-size: 14px;
-    color: var(--text-dim);
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .btn-send {
-    width: 46px; height: 46px;
-    background: var(--accent);
-    border: none; border-radius: 50%;
-    color: #fff; font-size: 20px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s;
-  }
-
-  .btn-send:active { transform: scale(0.9); }
-  .btn-send:disabled { background: #2a3942; cursor: not-allowed; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes msgIn { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
-
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:16px;height:16px;border:2px solid rgba(0,128,105,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
 </style>
 </head>
 <body>
+<div class="app-wrap">
 
 <!-- ═══ LOGIN ═══ -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-avatar">G</div>
-  <div class="login-title">GOGAS Daily Report</div>
-  <div class="login-sub">Enter your station credentials</div>
-  <div class="login-card">
-    <label>ERP Code</label>
-    <input class="login-input" type="text" id="erpCode" placeholder="e.g. GG-MH-0042">
-    <label>Passkey</label>
-    <input class="login-input" type="password" id="passkey" placeholder="Enter passkey">
-    <label class="remember-row">
-      <input type="checkbox" id="rememberMe" checked> Remember me
-    </label>
-    <button class="btn-login" onclick="handleLogin()">Continue</button>
+<div class="screen active" id="loginScreen">
+  <div class="hdr"><div class="hdr-icon">G</div><div><div class="hdr-t">GOGAS Daily Report</div></div></div>
+  <div class="login-body">
+    <div class="login-av">G</div>
+    <div class="login-h">Station Login</div>
+    <div class="login-p">Enter your station credentials</div>
+    <div class="card">
+      <label>ERP Code</label>
+      <input class="inp" type="text" id="loginErp" placeholder="e.g. GG-MH-0042">
+      <label>Passkey</label>
+      <input class="inp" type="password" id="loginPass" placeholder="Enter passkey">
+      <label class="chk-row"><input type="checkbox" id="loginRemember" checked> Remember me</label>
+      <button class="btn" id="btnLogin" onclick="handleLogin()">Login</button>
+      <div class="err-msg" id="loginErr">Invalid ERP Code or Passkey</div>
+      <div class="load-msg" id="loginLoad"><span class="spinner"></span> Verifying...</div>
+    </div>
+    <button class="link-btn" onclick="showTracker()">Admin: View Tracker</button>
   </div>
 </div>
 
-<!-- ═══ CHAT ═══ -->
-<div class="form-screen" id="formScreen" style="display:none;">
-
-  <div class="chat-header">
-    <div class="chat-avatar">G</div>
-    <div class="chat-info">
-      <div class="chat-name">GOGAS Report Bot</div>
-      <div class="chat-status" id="chatStatus">online</div>
-    </div>
-    <div class="chat-actions">
-      <button class="btn-act" onclick="resetForm()" title="Reset">R</button>
-      <button class="btn-act red" onclick="logout()" title="Logout">X</button>
-    </div>
+<!-- ═══ DATE ═══ -->
+<div class="screen" id="dateScreen">
+  <div class="hdr">
+    <div class="hdr-icon">G</div>
+    <div style="flex:1"><div class="hdr-t">GOGAS Daily Report</div><div class="hdr-s" id="dateHdrErp">--</div></div>
+    <button class="hdr-btn red" onclick="logout()">Logout</button>
   </div>
-
-  <div class="chat-body" id="chatBody">
-
-    <!-- Bot greeting -->
-    <div class="msg msg-in">
-      Fill in the blanks below and tap send. Auto fields will calculate themselves.
-      <div class="msg-time-stamp" id="greetTime">--:--</div>
+  <div class="date-body">
+    <div class="date-h">Welcome back!</div>
+    <div class="date-info" id="dateStation">--</div>
+    <div class="date-state" id="dateState">--</div>
+    <div class="card" style="max-width:320px">
+      <label>Select Report Date</label>
+      <input type="date" class="date-inp" id="selectedDate">
     </div>
-
-    <!-- Success message (hidden) -->
-    <div class="success-msg" id="successMsg">
-      <div class="success-inner">
-        <div class="success-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div>
-          <div class="success-label">Report submitted!</div>
-          <div class="success-detail" id="successDetail">Saved at --:--</div>
-        </div>
-      </div>
-      <button class="btn-edit-chat" onclick="enableEdit()">Tap to edit</button>
-    </div>
-
-    <!-- ═══ THE TAPPABLE REPORT TEMPLATE ═══ -->
-    <div class="report-bubble" id="reportBubble">
-
-      <div class="report-title">GOGAS DAILY REPORT</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">ERP Code</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="erpDisplay" style="color:var(--text);border:none;font-weight:400;">--</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">Station Name</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input wide" type="text" id="stationName" placeholder="tap to enter">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Shift 1 Sales Ltrs</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="shift1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Shift 2 Sales Ltrs</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="shift2" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Shift 3 Sales Ltrs</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="shift3" placeholder="0.00" oninput="calcAll()">
-      </div>
-
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">Date</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" id="reportDate" placeholder="DD">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Month</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input" type="text" id="reportMonth" placeholder="Month">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Year</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" id="reportYear" placeholder="YYYY">
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">OPENING</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">A1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="openA1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">B1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="openB1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">A2</span>
-        <span class="report-colon">:</span>
-        <span class="na-text">NA</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">B2</span>
-        <span class="report-colon">:</span>
-        <span class="na-text">NA</span>
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">CLOSING</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">A1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="closeA1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">B1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="closeB1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">A2</span>
-        <span class="report-colon">:</span>
-        <span class="na-text">NA</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">B2</span>
-        <span class="report-colon">:</span>
-        <span class="na-text">NA</span>
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">SALES</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">Total Sale</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="totalSale">0.00</span><span class="auto-tag">auto</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">Rtn Testing</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="rtnTesting" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Free Sale</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="freeSale" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Net Sale</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="netSale">0.00</span><span class="auto-tag">auto</span>
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">RATE</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">RSP - DU1 - N1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="rspDU1N1" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">RSP - DU1 - N2</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="rspDU1N2" placeholder="0.00">
-      </div>
-      <div class="report-row">
-        <span class="report-label">RSP - DU2 - N1</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="rspDU2N1" placeholder="0.00">
-      </div>
-      <div class="report-row">
-        <span class="report-label">RSP - DU2 - N2</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="rspDU2N2" placeholder="0.00">
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">PAYMENTS</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">Previous Cash Bal</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="prevCash" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Total Sales Amt</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="totalSalesAmt">0.00</span><span class="auto-tag">auto</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">Card Sale</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="cardSale" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Paytm Sale</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="paytmSale" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Free Sales Amt</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="freeSalesAmt" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Cash Sale Amt</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="cashSaleAmt">0.00</span><span class="auto-tag">auto</span>
-      </div>
-      <div class="report-row">
-        <span class="report-label">Bank Deposit</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="bankDeposit" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Cash In Hand</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="cashInHand">0.00</span><span class="auto-tag">auto</span>
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">STOCK</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">Dip Reading (mm)</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="1" id="dipReading" placeholder="0">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Stock in Ltrs</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="stockLtrs" placeholder="0.00">
-      </div>
-
-      <hr class="sep">
-      <div class="section-head">DG METER</div>
-      <hr class="sep">
-
-      <div class="report-row">
-        <span class="report-label">Opening DG</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="openDG" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Closing DG</span>
-        <span class="report-colon">:</span>
-        <input class="tap-input narrow" type="number" step="0.01" id="closeDG" placeholder="0.00" oninput="calcAll()">
-      </div>
-      <div class="report-row">
-        <span class="report-label">Hours</span>
-        <span class="report-colon">:</span>
-        <span class="auto-val" id="dgHours">0.00</span><span class="auto-tag">auto</span>
-      </div>
-
-      <hr class="sep">
-
-      <div class="msg-time-stamp">
-        <span id="reportTime">--:--</span>
-        <span class="ticks" id="tickMark">&#10003;</span>
-      </div>
-
-    </div>
-    <!-- end report bubble -->
-
+    <button class="btn" style="max-width:320px" onclick="openReport()">Open Report</button>
   </div>
-
-  <!-- Send bar -->
-  <div class="send-bar">
-    <div class="send-bar-text" id="sendBarText" onclick="scrollToEmpty()">Tap to fill report above</div>
-    <button class="btn-send" id="sendBtn" onclick="handleSubmit()">&#10148;</button>
-  </div>
-
 </div>
+
+<!-- ═══ REPORT ═══ -->
+<div class="screen" id="reportScreen">
+  <div class="hdr">
+    <div class="hdr-icon click" onclick="goBack()">&#8592;</div>
+    <div style="flex:1"><div class="hdr-t" id="rptHdrTitle">--</div><div class="hdr-s" id="rptHdrDate">--</div></div>
+    <button class="hdr-btn" onclick="resetForm()">Reset</button>
+  </div>
+
+  <div class="report-body">
+    <div class="sbar" id="successBar">
+      <div class="sdot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="sinfo"><div class="stitle" id="sTitle">Submitted!</div><div class="ssub" id="sSub">--</div></div>
+      <button class="btn-e" onclick="enableEdit()">Edit</button>
+    </div>
+
+    <div class="dbadge" id="dateBadge">--</div>
+    <div class="bot-msg">Fill in the blanks and tap send. Auto fields calculate live.<div class="ts" id="botTime">--:--</div></div>
+
+    <div class="rb" id="reportBubble">
+      <div class="rt">GOGAS DAILY REPORT</div><hr class="sep">
+      <div class="rr"><span class="rl">ERP Code</span><span class="rc">:</span><span class="av fixed-val" id="erpDisp">--</span></div>
+      <div class="rr"><span class="rl">Station Name</span><span class="rc">:</span><span class="av fixed-val" id="stDisp">--</span></div>
+      <div class="rr"><span class="rl">State</span><span class="rc">:</span><span class="av fixed-val" id="stateDisp">--</span></div>
+      <div class="rr"><span class="rl">Shift 1 Sales Ltrs</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="shift1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Shift 2 Sales Ltrs</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="shift2" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Shift 3 Sales Ltrs</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="shift3" placeholder="0.00" oninput="calcAll()"></div>
+      <hr class="sep"><div class="sh">OPENING</div><hr class="sep">
+      <div class="rr"><span class="rl">A1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="openA1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">B1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="openB1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">A2</span><span class="rc">:</span><span class="na">NA</span></div>
+      <div class="rr"><span class="rl">B2</span><span class="rc">:</span><span class="na">NA</span></div>
+      <hr class="sep"><div class="sh">CLOSING</div><hr class="sep">
+      <div class="rr"><span class="rl">A1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="closeA1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">B1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="closeB1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">A2</span><span class="rc">:</span><span class="na">NA</span></div>
+      <div class="rr"><span class="rl">B2</span><span class="rc">:</span><span class="na">NA</span></div>
+      <hr class="sep"><div class="sh">SALES</div><hr class="sep">
+      <div class="rr"><span class="rl">Total Sale</span><span class="rc">:</span><span class="av" id="totalSale">0.00</span><span class="at">auto</span></div>
+      <div class="rr"><span class="rl">Rtn Testing</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="rtnTesting" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Free Sale</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="freeSale" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Net Sale</span><span class="rc">:</span><span class="av" id="netSale">0.00</span><span class="at">auto</span></div>
+      <hr class="sep"><div class="sh">RATE</div><hr class="sep">
+      <div class="rr"><span class="rl">RSP - DU1 - N1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="rspDU1N1" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">RSP - DU1 - N2</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="rspDU1N2" placeholder="0.00"></div>
+      <div class="rr"><span class="rl">RSP - DU2 - N1</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="rspDU2N1" placeholder="0.00"></div>
+      <div class="rr"><span class="rl">RSP - DU2 - N2</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="rspDU2N2" placeholder="0.00"></div>
+      <hr class="sep"><div class="sh">PAYMENTS</div><hr class="sep">
+      <div class="rr"><span class="rl">Previous Cash Bal</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="prevCash" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Total Sales Amt</span><span class="rc">:</span><span class="av" id="totalSalesAmt">0.00</span><span class="at">auto</span></div>
+      <div class="rr"><span class="rl">Card Sale</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="cardSale" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Paytm Sale</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="paytmSale" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Free Sales Amt</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="freeSalesAmt" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Cash Sale Amt</span><span class="rc">:</span><span class="av" id="cashSaleAmt">0.00</span><span class="at">auto</span></div>
+      <div class="rr"><span class="rl">Bank Deposit</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="bankDeposit" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Cash In Hand</span><span class="rc">:</span><span class="av" id="cashInHand">0.00</span><span class="at">auto</span></div>
+      <hr class="sep"><div class="sh">STOCK</div><hr class="sep">
+      <div class="rr"><span class="rl">Dip Reading (mm)</span><span class="rc">:</span><input class="ti n" type="number" step="1" id="dipReading" placeholder="0"></div>
+      <div class="rr"><span class="rl">Stock in Ltrs</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="stockLtrs" placeholder="0.00"></div>
+      <hr class="sep"><div class="sh">DG METER</div><hr class="sep">
+      <div class="rr"><span class="rl">Opening DG</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="openDG" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Closing DG</span><span class="rc">:</span><input class="ti n" type="number" step="0.01" id="closeDG" placeholder="0.00" oninput="calcAll()"></div>
+      <div class="rr"><span class="rl">Hours</span><span class="rc">:</span><span class="av" id="dgHours">0.00</span><span class="at">auto</span></div>
+      <hr class="sep">
+      <div class="stamp"><span id="reportTime">--:--</span><span class="tk" id="tickMark">&#10003;</span></div>
+    </div>
+  </div>
+  <div class="send-bar"><div class="sbt" id="sendBarText" onclick="scrollToEmpty()">Tap to fill report above</div><button class="btn-send" id="sendBtn" onclick="handleSubmit()">&#10148;</button></div>
+</div>
+
+<!-- ═══ TRACKER ═══ -->
+<div class="screen" id="trackerScreen">
+  <div class="hdr">
+    <div class="hdr-icon click" onclick="show('loginScreen')">&#8592;</div>
+    <div style="flex:1"><div class="hdr-t">Report Tracker</div><div class="hdr-s">State-wise posting status</div></div>
+  </div>
+  <div class="tracker-body">
+    <div class="tracker-date-row">
+      <input type="date" id="trackerDate">
+      <button onclick="loadTracker()">Check</button>
+    </div>
+    <div class="tracker-summary" id="trackerSummary" style="display:none">
+      <div class="tracker-stat"><div class="tracker-num blue" id="trTotal">0</div><div class="tracker-lbl">Total</div></div>
+      <div class="tracker-stat"><div class="tracker-num green" id="trPosted">0</div><div class="tracker-lbl">Posted</div></div>
+      <div class="tracker-stat"><div class="tracker-num red" id="trMissing">0</div><div class="tracker-lbl">Missing</div></div>
+    </div>
+    <div id="trackerContent"><div class="tracker-loading">Select a date and tap Check</div></div>
+  </div>
+</div>
+
+</div><!-- end app-wrap -->
 
 <script>
-  let isSubmitted = false;
-  let currentERP = '';
+const API='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+let curERP='',curStation='',curState='',curDate='',isSub=false;
 
-  function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
-  function s(id, val) { document.getElementById(id).textContent = val.toFixed(2); }
+function v(id){return parseFloat(document.getElementById(id).value)||0}
+function s(id,val){document.getElementById(id).textContent=val.toFixed(2)}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function timeNow(){return new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'})}
 
-  function calcAll() {
-    const totalSale = (v('closeA1') - v('openA1')) + (v('closeB1') - v('openB1'));
-    s('totalSale', totalSale);
+function calcAll(){
+  const t=(v('closeA1')-v('openA1'))+(v('closeB1')-v('openB1'));s('totalSale',t);
+  const n=t-v('rtnTesting')-v('freeSale');s('netSale',n);
+  const ta=n*v('rspDU1N1');s('totalSalesAmt',ta);
+  const c=ta-v('cardSale')-v('paytmSale')-v('freeSalesAmt');s('cashSaleAmt',c);
+  s('cashInHand',v('prevCash')+c-v('bankDeposit'));
+  s('dgHours',v('closeDG')-v('openDG'));
+}
 
-    const netSale = totalSale - v('rtnTesting') - v('freeSale');
-    s('netSale', netSale);
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('gogas_session');
+  if(saved){const ss=JSON.parse(saved);curERP=ss.erp;curStation=ss.station;curState=ss.state||'';showDateScreen();}
+  document.getElementById('selectedDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('trackerDate').value=new Date().toISOString().split('T')[0];
+});
 
-    const rate = v('rspDU1N1');
-    const totalSalesAmt = netSale * rate;
-    s('totalSalesAmt', totalSalesAmt);
-
-    const cashSaleAmt = totalSalesAmt - v('cardSale') - v('paytmSale') - v('freeSalesAmt');
-    s('cashSaleAmt', cashSaleAmt);
-
-    const cashInHand = v('prevCash') + cashSaleAmt - v('bankDeposit');
-    s('cashInHand', cashInHand);
-
-    const dgHours = v('closeDG') - v('openDG');
-    s('dgHours', dgHours);
+async function handleLogin(){
+  const erp=document.getElementById('loginErp').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  if(!erp||!pass)return;
+  const btn=document.getElementById('btnLogin');
+  const err=document.getElementById('loginErr');
+  const load=document.getElementById('loginLoad');
+  btn.disabled=true;err.style.display='none';load.style.display='block';
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'login',erp_code:erp,passkey:pass})});
+    const j=await res.json();
+    if(j.status==='success'){
+      curERP=j.erp_code||erp;curStation=j.station_name||'';curState=j.state||'';
+      if(document.getElementById('loginRemember').checked)localStorage.setItem('gogas_session',JSON.stringify({erp:curERP,station:curStation,state:curState}));
+      showDateScreen();
+    }else{err.textContent=j.message||'Invalid credentials';err.style.display='block';}
+  }catch(e){
+    if(API==='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){curERP=erp;curStation='Test Station';curState='Test State';localStorage.setItem('gogas_session',JSON.stringify({erp:curERP,station:curStation,state:curState}));showDateScreen();}
+    else{err.textContent='Connection error';err.style.display='block';}
   }
+  btn.disabled=false;load.style.display='none';
+}
 
-  function scrollToEmpty() {
-    const inputs = document.querySelectorAll('.tap-input');
-    for (const inp of inputs) {
-      if (!inp.value) {
-        inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => inp.focus(), 400);
-        return;
+function showDateScreen(){
+  document.getElementById('dateHdrErp').textContent='ERP: '+curERP;
+  document.getElementById('dateStation').textContent=curStation||curERP;
+  document.getElementById('dateState').textContent=curState?'State: '+curState:'';
+  show('dateScreen');
+}
+
+function logout(){localStorage.removeItem('gogas_session');curERP='';curStation='';curState='';document.getElementById('loginErp').value='';document.getElementById('loginPass').value='';show('loginScreen');}
+
+function openReport(){
+  const dv=document.getElementById('selectedDate').value;if(!dv)return;curDate=dv;
+  const d=new Date(dv+'T00:00:00');const fmt=d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('rptHdrTitle').textContent=curStation||curERP;
+  document.getElementById('rptHdrDate').textContent=fmt;
+  document.getElementById('dateBadge').textContent=fmt;
+  document.getElementById('erpDisp').textContent=curERP;
+  document.getElementById('stDisp').textContent=curStation||'--';
+  document.getElementById('stateDisp').textContent=curState||'--';
+  document.getElementById('botTime').textContent=timeNow();
+  document.getElementById('reportTime').textContent=timeNow();
+  isSub=false;document.getElementById('reportBubble').classList.remove('submitted');
+  document.getElementById('tickMark').innerHTML='&#10003;';
+  document.getElementById('sendBtn').disabled=false;
+  document.getElementById('sendBarText').textContent='Tap to fill report above';
+  document.getElementById('successBar').classList.remove('show');
+  clearForm();show('reportScreen');
+}
+
+function goBack(){show('dateScreen')}
+function clearForm(){document.querySelectorAll('.ti').forEach(i=>i.value='');document.querySelectorAll('.av').forEach(el=>{if(!['erpDisp','stDisp','stateDisp'].includes(el.id))el.textContent='0.00'});}
+function resetForm(){if(isSub&&!confirm('Clear all data?'))return;clearForm();enableEdit();}
+function scrollToEmpty(){const inputs=document.querySelectorAll('.ti');for(const inp of inputs){if(!inp.value){inp.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>inp.focus(),400);return;}}}
+function enableEdit(){isSub=false;document.getElementById('reportBubble').classList.remove('submitted');document.getElementById('tickMark').innerHTML='&#10003;';document.getElementById('successBar').classList.remove('show');document.getElementById('sendBtn').disabled=false;document.getElementById('sendBarText').textContent='Tap to fill report above';}
+
+async function handleSubmit(){
+  if(isSub)return;isSub=true;
+  document.getElementById('reportBubble').classList.add('submitted');
+  document.getElementById('tickMark').innerHTML='&#10003;&#10003;';
+  document.getElementById('sendBtn').disabled=true;
+  document.getElementById('sendBarText').textContent='Sending...';
+  const d=new Date(curDate+'T00:00:00');
+  const data={action:'submit',erp_code:curERP,station_name:curStation,state:curState,
+    date:d.getDate(),month:d.toLocaleString('en',{month:'long'}),year:d.getFullYear(),
+    shift1:v('shift1'),shift2:v('shift2'),shift3:v('shift3'),
+    open_a1:v('openA1'),open_b1:v('openB1'),close_a1:v('closeA1'),close_b1:v('closeB1'),
+    total_sale:parseFloat(document.getElementById('totalSale').textContent)||0,
+    rtn_testing:v('rtnTesting'),free_sale:v('freeSale'),
+    net_sale:parseFloat(document.getElementById('netSale').textContent)||0,
+    rsp_du1_n1:v('rspDU1N1'),rsp_du1_n2:v('rspDU1N2'),rsp_du2_n1:v('rspDU2N1'),rsp_du2_n2:v('rspDU2N2'),
+    prev_cash:v('prevCash'),total_sales_amt:parseFloat(document.getElementById('totalSalesAmt').textContent)||0,
+    card_sale:v('cardSale'),paytm_sale:v('paytmSale'),free_sales_amt:v('freeSalesAmt'),
+    cash_sale_amt:parseFloat(document.getElementById('cashSaleAmt').textContent)||0,
+    bank_deposit:v('bankDeposit'),cash_in_hand:parseFloat(document.getElementById('cashInHand').textContent)||0,
+    dip_reading:v('dipReading'),stock_ltrs:v('stockLtrs'),
+    open_dg:v('openDG'),close_dg:v('closeDG'),dg_hours:parseFloat(document.getElementById('dgHours').textContent)||0};
+  try{await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+    document.getElementById('sTitle').textContent='Submitted to Google Sheet!';
+  }catch(e){document.getElementById('sTitle').textContent='Submitted (offline)';}
+  document.getElementById('sSub').textContent='Saved at '+timeNow();
+  document.getElementById('successBar').classList.add('show');
+  document.getElementById('sendBarText').textContent='Report submitted';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showTracker(){show('trackerScreen')}
+
+async function loadTracker(){
+  const dv=document.getElementById('trackerDate').value;if(!dv)return;
+  const d=new Date(dv+'T00:00:00');
+  const cont=document.getElementById('trackerContent');
+  cont.innerHTML='<div class="tracker-loading"><span class="spinner"></span> Loading...</div>';
+  document.getElementById('trackerSummary').style.display='none';
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+      action:'tracker',date:d.getDate(),month:d.toLocaleString('en',{month:'long'}),year:d.getFullYear()
+    })});
+    const j=await res.json();
+    if(j.status==='success'){
+      document.getElementById('trTotal').textContent=j.total_stations;
+      document.getElementById('trPosted').textContent=j.total_posted;
+      document.getElementById('trMissing').textContent=j.total_not_posted;
+      document.getElementById('trackerSummary').style.display='flex';
+      let html='';
+      const states=Object.keys(j.states).sort();
+      for(const st of states){
+        const info=j.states[st];
+        const pct=info.total>0?Math.round((info.posted/info.total)*100):0;
+        html+=`<div class="state-card"><div class="state-header" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span class="state-name">${st}</span>
+          <div class="state-counts"><span class="state-posted">${info.posted}/${info.total}</span>
+          ${info.notPosted.length>0?`<span class="state-missing">${info.notPosted.length} missing</span>`:''}</div>
+        </div><div class="state-details">
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+        if(info.notPosted.length>0){
+          html+='<div style="margin-top:8px;font-weight:600;color:var(--danger)">Missing stations:</div>';
+          for(const m of info.notPosted){html+=`<div class="missing-item">${m.erp} — ${m.station}</div>`;}
+        }else{html+='<div style="margin-top:8px;color:var(--accent);font-weight:600">All stations reported!</div>';}
+        html+='</div></div>';
       }
-    }
-  }
-
-  function timeNow() {
-    return new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function prefillDate() {
-    const now = new Date();
-    document.getElementById('reportDate').value = now.getDate();
-    document.getElementById('reportMonth').value = now.toLocaleString('en', { month: 'long' });
-    document.getElementById('reportYear').value = now.getFullYear();
-  }
-
-  // ── Login ──
-  window.addEventListener('DOMContentLoaded', () => {
-    const saved = localStorage.getItem('gogas_erp');
-    const savedP = localStorage.getItem('gogas_pass');
-    if (saved && savedP) {
-      currentERP = saved;
-      showForm();
-    }
-  });
-
-  function handleLogin() {
-    const erp = document.getElementById('erpCode').value.trim();
-    const pass = document.getElementById('passkey').value.trim();
-    if (!erp || !pass) return;
-    currentERP = erp;
-    if (document.getElementById('rememberMe').checked) {
-      localStorage.setItem('gogas_erp', erp);
-      localStorage.setItem('gogas_pass', pass);
-    }
-    showForm();
-  }
-
-  function showForm() {
-    document.getElementById('erpDisplay').textContent = currentERP;
-    document.getElementById('chatStatus').textContent = currentERP + ' connected';
-    document.getElementById('greetTime').textContent = timeNow();
-    document.getElementById('reportTime').textContent = timeNow();
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('formScreen').style.display = 'block';
-    prefillDate();
-  }
-
-  // ── Submit ──
-  function handleSubmit() {
-    if (isSubmitted) return;
-    isSubmitted = true;
-    document.getElementById('reportBubble').classList.add('submitted');
-    document.getElementById('tickMark').innerHTML = '&#10003;&#10003;';
-    document.getElementById('successDetail').textContent = 'Saved at ' + timeNow();
-    document.getElementById('successMsg').classList.add('show');
-    document.getElementById('successMsg').style.display = 'block';
-    document.getElementById('sendBtn').disabled = true;
-    document.getElementById('sendBarText').textContent = 'Report submitted';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const data = collectFormData();
-    console.log('Report:', JSON.stringify(data, null, 2));
-  }
-
-  function enableEdit() {
-    isSubmitted = false;
-    document.getElementById('reportBubble').classList.remove('submitted');
-    document.getElementById('tickMark').innerHTML = '&#10003;';
-    document.getElementById('successMsg').classList.remove('show');
-    document.getElementById('successMsg').style.display = 'none';
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('sendBarText').textContent = 'Tap to fill report above';
-  }
-
-  function resetForm() {
-    if (isSubmitted && !confirm('Clear data for new day?')) return;
-    document.querySelectorAll('.tap-input').forEach(i => i.value = '');
-    document.querySelectorAll('.auto-val').forEach(el => {
-      if (el.id !== 'erpDisplay') el.textContent = '0.00';
-    });
-    enableEdit();
-    prefillDate();
-    document.getElementById('reportTime').textContent = timeNow();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function logout() {
-    localStorage.removeItem('gogas_erp');
-    localStorage.removeItem('gogas_pass');
-    currentERP = '';
-    document.getElementById('formScreen').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('erpCode').value = '';
-    document.getElementById('passkey').value = '';
-    resetForm();
-  }
-
-  function collectFormData() {
-    return {
-      erp_code: currentERP,
-      station_name: document.getElementById('stationName').value,
-      date: v('reportDate'), month: document.getElementById('reportMonth').value, year: v('reportYear'),
-      shift1: v('shift1'), shift2: v('shift2'), shift3: v('shift3'),
-      open_a1: v('openA1'), open_b1: v('openB1'),
-      close_a1: v('closeA1'), close_b1: v('closeB1'),
-      total_sale: parseFloat(document.getElementById('totalSale').textContent) || 0,
-      rtn_testing: v('rtnTesting'), free_sale: v('freeSale'),
-      net_sale: parseFloat(document.getElementById('netSale').textContent) || 0,
-      rsp_du1_n1: v('rspDU1N1'), rsp_du1_n2: v('rspDU1N2'),
-      rsp_du2_n1: v('rspDU2N1'), rsp_du2_n2: v('rspDU2N2'),
-      prev_cash: v('prevCash'),
-      total_sales_amt: parseFloat(document.getElementById('totalSalesAmt').textContent) || 0,
-      card_sale: v('cardSale'), paytm_sale: v('paytmSale'),
-      free_sales_amt: v('freeSalesAmt'),
-      cash_sale_amt: parseFloat(document.getElementById('cashSaleAmt').textContent) || 0,
-      bank_deposit: v('bankDeposit'),
-      cash_in_hand: parseFloat(document.getElementById('cashInHand').textContent) || 0,
-      dip_reading: v('dipReading'), stock_ltrs: v('stockLtrs'),
-      open_dg: v('openDG'), close_dg: v('closeDG'),
-      dg_hours: parseFloat(document.getElementById('dgHours').textContent) || 0,
-      submitted_at: new Date().toISOString()
-    };
-  }
+      cont.innerHTML=html;
+    }else{cont.innerHTML='<div class="tracker-loading">Error: '+j.message+'</div>';}
+  }catch(e){cont.innerHTML='<div class="tracker-loading">Connection error. Is the API configured?</div>';}
+}
 </script>
-
 </body>
 </html>
