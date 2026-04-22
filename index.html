@@ -66,7 +66,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .missed-picker input{width:100%;padding:12px 14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;font-size:15px;font-family:inherit;color:var(--text);outline:none;background:var(--bg)}
 .missed-picker input:focus{border-color:var(--orange)}
 
-.biz-info{font-size:11px;color:var(--text-faint);text-align:center;max-width:280px}
+.biz-info{width:100%;max-width:340px;background:var(--white);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);text-align:center}
+.biz-label{font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.biz-range{font-size:14px;font-weight:700;color:var(--text)}
+.biz-range span{color:var(--accent)}
 .link-btn{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit;text-decoration:underline}
 
 /* Report */
@@ -195,8 +198,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <input type="date" id="missedDate">
     </div>
 
-    <div class="biz-info">Business day: 6:00 AM today to 5:59 AM next day</div>
-    <button class="btn" style="max-width:340px" onclick="openReport()">Open Report</button>
+    <div class="biz-info">
+      <div class="biz-label">Today's Business Day</div>
+      <div class="biz-range" id="bizRange">--</div>
+    </div>
+    <button class="btn" style="max-width:340px" onclick="openReport()">Submit Report</button>
   </div>
 </div>
 
@@ -370,6 +376,11 @@ function showDateScreen(){
   document.getElementById('dateState').textContent=curState?'State: '+curState:'';
   const biz=getBusinessDate();
   document.getElementById('freshDate').textContent=fmtShort(biz);
+  // Show business day range
+  const bizNext=new Date(biz);bizNext.setDate(bizNext.getDate()+1);
+  const bizDayStr=biz.toLocaleDateString('en',{day:'numeric',month:'short'});
+  const bizNextStr=bizNext.toLocaleDateString('en',{day:'numeric',month:'short'});
+  document.getElementById('bizRange').innerHTML='<span>'+bizDayStr+'</span> 6:00 AM &rarr; <span>'+bizNextStr+'</span> 5:59 AM';
   curDate=fmtDate(biz);isMissed=false;
   document.getElementById('freshOpt').classList.add('active');
   document.getElementById('missedOpt').classList.remove('active','missed-active');
