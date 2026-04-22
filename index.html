@@ -6,17 +6,13 @@
 <title>GOGAS Daily Report</title>
 <meta property="og:title" content="GOGAS Daily Report">
 <meta property="og:description" content="Tap to submit your daily station report">
-<meta name="description" content="Submit your GOGAS daily station report">
 <meta name="theme-color" content="#008069">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f0f2f5;--chat-bg:#efeae2;--white:#fff;--accent:#008069;--text:#111b21;--text-dim:rgba(17,27,33,0.55);--text-faint:rgba(17,27,33,0.25);--input-line:rgba(0,128,105,0.4);--label:#54656f;--bubble-out:#d9fdd3;--bubble-in:#fff;--danger:#e74c3c;--shadow:0 1px 3px rgba(0,0,0,0.08)}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
-
-/* ── Centered container for desktop ── */
 .app-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,0.08)}
-
 .screen{display:none;min-height:100vh;flex-direction:column;animation:fadeIn .3s ease}
 .screen.active{display:flex}
 .hdr{background:var(--accent);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
@@ -51,18 +47,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .date-h{font-size:18px;font-weight:700;text-align:center}
 .date-info{font-size:13px;color:var(--accent);font-weight:600}
 .date-state{font-size:12px;color:var(--text-dim)}
-.date-inp{width:100%;padding:14px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;font-size:16px;font-family:inherit;color:var(--text);outline:none;background:var(--bg)}
-.date-inp:focus{border-color:var(--accent)}
+
+/* Date toggle buttons */
+.date-toggle{display:flex;gap:8px;width:100%;max-width:320px}
+.date-opt{flex:1;padding:14px 10px;border:2px solid rgba(0,0,0,0.08);border-radius:14px;background:var(--white);text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.date-opt.active{border-color:var(--accent);background:rgba(0,128,105,0.05)}
+.date-opt-day{font-size:13px;font-weight:600;color:var(--text)}
+.date-opt-date{font-size:11px;color:var(--text-dim);margin-top:3px}
+.date-opt-tag{font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.date-opt:active{transform:scale(.97)}
 .link-btn{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit;text-decoration:underline}
-.link-btn.red{color:var(--danger)}
+
+.biz-info{font-size:11px;color:var(--text-faint);text-align:center;max-width:280px}
 
 /* Report */
 .report-body{flex:1;padding:8px 10px 110px;background:var(--chat-bg);background-image:url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.025'%3E%3Cpath d='M20 20h8v2h-8zM60 20h8v2h-8zM100 20h8v2h-8zM140 20h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E")}
 .dbadge{text-align:center;padding:6px 16px;background:rgba(0,128,105,0.08);border-radius:16px;font-size:12px;color:var(--accent);font-weight:600;width:fit-content;margin:8px auto}
 .bot-msg{max-width:88%;background:var(--bubble-in);border-radius:10px 10px 10px 3px;padding:8px 12px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,0.06);margin-bottom:6px}
 .bot-msg .ts{font-size:11px;color:var(--text-faint);text-align:right;margin-top:2px}
-
-/* Report bubble - CENTERED */
 .rb{width:100%;background:var(--bubble-out);border-radius:10px;padding:10px 12px 6px;font-size:13.5px;line-height:1.7;box-shadow:0 1px 1px rgba(0,0,0,0.06)}
 .rt{text-align:center;font-weight:700;font-size:13px;letter-spacing:.5px;color:var(--accent);margin-bottom:4px}
 .sep{border:none;border-top:1px dashed rgba(0,0,0,0.1);margin:5px 0}
@@ -80,8 +82,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .fixed-val{color:var(--text);font-weight:500;font-size:14px;border:none}
 .stamp{font-size:11px;color:var(--text-faint);text-align:right;margin-top:2px;display:flex;align-items:center;justify-content:flex-end;gap:3px}
 .stamp .tk{color:#53bdeb;font-size:13px}
-
-/* Success */
 .sbar{background:var(--white);border-radius:10px;padding:12px 16px;margin:8px 0;box-shadow:var(--shadow);display:none;align-items:center;gap:10px}
 .sbar.show{display:flex}
 .sdot{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -91,8 +91,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .ssub{font-size:11px;color:var(--text-dim)}
 .btn-e{padding:6px 14px;border:1px solid rgba(0,128,105,0.35);background:none;border-radius:14px;color:var(--accent);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
 .submitted .ti{pointer-events:none;opacity:.6;border-bottom-color:rgba(0,0,0,0.08);border-bottom-style:solid}
-
-/* Send bar - constrained to app width */
 .send-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg);border-top:1px solid rgba(0,0,0,0.06);padding:8px 10px;display:flex;align-items:center;gap:8px;z-index:100}
 .sbt{flex:1;background:#fff;border-radius:22px;padding:10px 18px;font-size:14px;color:var(--text-dim);cursor:pointer;user-select:none;border:1px solid rgba(0,0,0,0.06)}
 .btn-send{width:46px;height:46px;background:var(--accent);border:none;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
@@ -125,11 +123,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .progress-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;margin-top:8px;overflow:hidden}
 .progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease}
 
-/* Desktop background */
-@media(min-width:481px){
-  body{background:#d1d7db}
-}
-
+@media(min-width:481px){body{background:#d1d7db}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:16px;height:16px;border:2px solid rgba(0,128,105,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
@@ -167,13 +161,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="hdr-btn red" onclick="logout()">Logout</button>
   </div>
   <div class="date-body">
-    <div class="date-h">Welcome back!</div>
+    <div class="date-h">Select Report Date</div>
     <div class="date-info" id="dateStation">--</div>
     <div class="date-state" id="dateState">--</div>
-    <div class="card" style="max-width:320px">
-      <label>Select Report Date</label>
-      <input type="date" class="date-inp" id="selectedDate">
+    <div class="date-toggle" id="dateToggle">
+      <!-- Filled by JS -->
     </div>
+    <div class="biz-info">Business day: 6:00 AM today to 5:59 AM next day</div>
     <button class="btn" style="max-width:320px" onclick="openReport()">Open Report</button>
   </div>
 </div>
@@ -185,17 +179,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div style="flex:1"><div class="hdr-t" id="rptHdrTitle">--</div><div class="hdr-s" id="rptHdrDate">--</div></div>
     <button class="hdr-btn" onclick="resetForm()">Reset</button>
   </div>
-
   <div class="report-body">
     <div class="sbar" id="successBar">
       <div class="sdot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="sinfo"><div class="stitle" id="sTitle">Submitted!</div><div class="ssub" id="sSub">--</div></div>
       <button class="btn-e" onclick="enableEdit()">Edit</button>
     </div>
-
     <div class="dbadge" id="dateBadge">--</div>
     <div class="bot-msg">Fill in the blanks and tap send. Auto fields calculate live.<div class="ts" id="botTime">--:--</div></div>
-
     <div class="rb" id="reportBubble">
       <div class="rt">GOGAS DAILY REPORT</div><hr class="sep">
       <div class="rr"><span class="rl">ERP Code</span><span class="rc">:</span><span class="av fixed-val" id="erpDisp">--</span></div>
@@ -267,12 +258,66 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
-</div><!-- end app-wrap -->
+</div>
 
 <script>
 const API='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 let curERP='',curStation='',curState='',curDate='',isSub=false;
 
+// ── Business Day Logic ──
+function getBusinessDate(){
+  const now=new Date();
+  const h=now.getHours();
+  // Before 6 AM = previous day's business
+  if(h<6){
+    const prev=new Date(now);
+    prev.setDate(prev.getDate()-1);
+    return prev;
+  }
+  return now;
+}
+
+function getYesterdayBusiness(){
+  const biz=getBusinessDate();
+  const y=new Date(biz);
+  y.setDate(y.getDate()-1);
+  return y;
+}
+
+function fmtDate(d){return d.toISOString().split('T')[0]}
+function fmtDisplay(d){return d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'short'})}
+function fmtFull(d){return d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'long',year:'numeric'})}
+
+function buildDateToggle(){
+  const today=getBusinessDate();
+  const yesterday=getYesterdayBusiness();
+  const el=document.getElementById('dateToggle');
+  
+  const nowH=new Date().getHours();
+  const isEarly=nowH<6;
+  
+  el.innerHTML=`
+    <div class="date-opt active" onclick="selectDate(this,'${fmtDate(today)}')">
+      <div class="date-opt-day">${isEarly?'Yesterday':'Today'}</div>
+      <div class="date-opt-date">${fmtDisplay(today)}</div>
+      <div class="date-opt-tag">current</div>
+    </div>
+    <div class="date-opt" onclick="selectDate(this,'${fmtDate(yesterday)}')">
+      <div class="date-opt-day">${isEarly?'Day before':'Yesterday'}</div>
+      <div class="date-opt-date">${fmtDisplay(yesterday)}</div>
+      <div class="date-opt-tag">missed?</div>
+    </div>
+  `;
+  curDate=fmtDate(today);
+}
+
+function selectDate(el,dateStr){
+  document.querySelectorAll('.date-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  curDate=dateStr;
+}
+
+// ── Helpers ──
 function v(id){return parseFloat(document.getElementById(id).value)||0}
 function s(id,val){document.getElementById(id).textContent=val.toFixed(2)}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
@@ -287,13 +332,14 @@ function calcAll(){
   s('dgHours',v('closeDG')-v('openDG'));
 }
 
+// ── Init ──
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('gogas_session');
   if(saved){const ss=JSON.parse(saved);curERP=ss.erp;curStation=ss.station;curState=ss.state||'';showDateScreen();}
-  document.getElementById('selectedDate').value=new Date().toISOString().split('T')[0];
-  document.getElementById('trackerDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('trackerDate').value=fmtDate(getBusinessDate());
 });
 
+// ── Login ──
 async function handleLogin(){
   const erp=document.getElementById('loginErp').value.trim();
   const pass=document.getElementById('loginPass').value.trim();
@@ -321,14 +367,17 @@ function showDateScreen(){
   document.getElementById('dateHdrErp').textContent='ERP: '+curERP;
   document.getElementById('dateStation').textContent=curStation||curERP;
   document.getElementById('dateState').textContent=curState?'State: '+curState:'';
+  buildDateToggle();
   show('dateScreen');
 }
 
 function logout(){localStorage.removeItem('gogas_session');curERP='';curStation='';curState='';document.getElementById('loginErp').value='';document.getElementById('loginPass').value='';show('loginScreen');}
 
+// ── Report ──
 function openReport(){
-  const dv=document.getElementById('selectedDate').value;if(!dv)return;curDate=dv;
-  const d=new Date(dv+'T00:00:00');const fmt=d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+  if(!curDate)return;
+  const d=new Date(curDate+'T00:00:00');
+  const fmt=fmtFull(d);
   document.getElementById('rptHdrTitle').textContent=curStation||curERP;
   document.getElementById('rptHdrDate').textContent=fmt;
   document.getElementById('dateBadge').textContent=fmt;
@@ -381,8 +430,8 @@ async function handleSubmit(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ── Tracker ──
 function showTracker(){show('trackerScreen')}
-
 async function loadTracker(){
   const dv=document.getElementById('trackerDate').value;if(!dv)return;
   const d=new Date(dv+'T00:00:00');
