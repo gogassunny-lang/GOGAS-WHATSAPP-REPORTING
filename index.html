@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f0f2f5;--chat-bg:#efeae2;--white:#fff;--accent:#008069;--text:#111b21;--text-dim:rgba(17,27,33,0.55);--text-faint:rgba(17,27,33,0.25);--input-line:rgba(0,128,105,0.4);--label:#54656f;--bubble-out:#d9fdd3;--bubble-in:#fff;--danger:#e74c3c;--shadow:0 1px 3px rgba(0,0,0,0.08)}
+:root{--bg:#f0f2f5;--chat-bg:#efeae2;--white:#fff;--accent:#008069;--text:#111b21;--text-dim:rgba(17,27,33,0.55);--text-faint:rgba(17,27,33,0.25);--input-line:rgba(0,128,105,0.4);--label:#54656f;--bubble-out:#d9fdd3;--bubble-in:#fff;--danger:#e74c3c;--orange:#e67e22;--shadow:0 1px 3px rgba(0,0,0,0.08)}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
 .app-wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;box-shadow:0 0 40px rgba(0,0,0,0.08)}
 .screen{display:none;min-height:100vh;flex-direction:column;animation:fadeIn .3s ease}
@@ -43,26 +43,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .load-msg{color:var(--accent);font-size:13px;text-align:center;margin-top:8px;display:none}
 
 /* Date */
-.date-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:14px}
+.date-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px}
 .date-h{font-size:18px;font-weight:700;text-align:center}
 .date-info{font-size:13px;color:var(--accent);font-weight:600}
 .date-state{font-size:12px;color:var(--text-dim)}
 
-/* Date toggle buttons */
-.date-toggle{display:flex;gap:8px;width:100%;max-width:320px}
-.date-opt{flex:1;padding:14px 10px;border:2px solid rgba(0,0,0,0.08);border-radius:14px;background:var(--white);text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
-.date-opt.active{border-color:var(--accent);background:rgba(0,128,105,0.05)}
-.date-opt-day{font-size:13px;font-weight:600;color:var(--text)}
-.date-opt-date{font-size:11px;color:var(--text-dim);margin-top:3px}
-.date-opt-tag{font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+/* Fresh vs Missed cards */
+.date-toggle{display:flex;gap:10px;width:100%;max-width:340px}
+.date-opt{flex:1;padding:18px 12px;border:2px solid rgba(0,0,0,0.06);border-radius:16px;background:var(--white);text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.date-opt.active{border-color:var(--accent);background:rgba(0,128,105,0.04)}
+.date-opt.active.missed-active{border-color:var(--orange);background:rgba(230,126,34,0.04)}
+.date-opt-icon{font-size:28px;margin-bottom:6px}
+.date-opt-title{font-size:15px;font-weight:700;color:var(--text)}
+.date-opt-desc{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.4}
+.date-opt-date{font-size:13px;font-weight:600;color:var(--accent);margin-top:8px;padding:4px 12px;background:rgba(0,128,105,0.08);border-radius:8px;display:inline-block}
 .date-opt:active{transform:scale(.97)}
-.link-btn{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit;text-decoration:underline}
+
+/* Missed date picker */
+.missed-picker{display:none;width:100%;max-width:340px;background:var(--white);border-radius:14px;padding:16px;box-shadow:var(--shadow);animation:fadeIn .2s ease}
+.missed-picker.show{display:block}
+.missed-picker label{font-size:11px;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:8px}
+.missed-picker input{width:100%;padding:12px 14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;font-size:15px;font-family:inherit;color:var(--text);outline:none;background:var(--bg)}
+.missed-picker input:focus{border-color:var(--orange)}
 
 .biz-info{font-size:11px;color:var(--text-faint);text-align:center;max-width:280px}
+.link-btn{font-size:13px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit;text-decoration:underline}
 
 /* Report */
 .report-body{flex:1;padding:8px 10px 110px;background:var(--chat-bg);background-image:url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.025'%3E%3Cpath d='M20 20h8v2h-8zM60 20h8v2h-8zM100 20h8v2h-8zM140 20h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E")}
 .dbadge{text-align:center;padding:6px 16px;background:rgba(0,128,105,0.08);border-radius:16px;font-size:12px;color:var(--accent);font-weight:600;width:fit-content;margin:8px auto}
+.dbadge.missed-badge{background:rgba(230,126,34,0.1);color:var(--orange)}
 .bot-msg{max-width:88%;background:var(--bubble-in);border-radius:10px 10px 10px 3px;padding:8px 12px;font-size:14px;box-shadow:0 1px 1px rgba(0,0,0,0.06);margin-bottom:6px}
 .bot-msg .ts{font-size:11px;color:var(--text-faint);text-align:right;margin-top:2px}
 .rb{width:100%;background:var(--bubble-out);border-radius:10px;padding:10px 12px 6px;font-size:13.5px;line-height:1.7;box-shadow:0 1px 1px rgba(0,0,0,0.06)}
@@ -161,14 +171,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="hdr-btn red" onclick="logout()">Logout</button>
   </div>
   <div class="date-body">
-    <div class="date-h">Select Report Date</div>
+    <div class="date-h">Post Report</div>
     <div class="date-info" id="dateStation">--</div>
     <div class="date-state" id="dateState">--</div>
-    <div class="date-toggle" id="dateToggle">
-      <!-- Filled by JS -->
+
+    <div class="date-toggle">
+      <div class="date-opt active" id="freshOpt" onclick="selectFresh()">
+        <div class="date-opt-icon">&#9998;</div>
+        <div class="date-opt-title">Fresh</div>
+        <div class="date-opt-desc">Today's business day report</div>
+        <div class="date-opt-date" id="freshDate">--</div>
+      </div>
+      <div class="date-opt" id="missedOpt" onclick="selectMissed()">
+        <div class="date-opt-icon">&#128197;</div>
+        <div class="date-opt-title">Missed</div>
+        <div class="date-opt-desc">Submit a past date report</div>
+        <div class="date-opt-date" style="background:rgba(230,126,34,0.1);color:var(--orange)">Select date below</div>
+      </div>
     </div>
+
+    <div class="missed-picker" id="missedPicker">
+      <label>Select missed report date</label>
+      <input type="date" id="missedDate">
+    </div>
+
     <div class="biz-info">Business day: 6:00 AM today to 5:59 AM next day</div>
-    <button class="btn" style="max-width:320px" onclick="openReport()">Open Report</button>
+    <button class="btn" style="max-width:340px" onclick="openReport()">Open Report</button>
   </div>
 </div>
 
@@ -262,62 +290,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <script>
 const API='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-let curERP='',curStation='',curState='',curDate='',isSub=false;
+let curERP='',curStation='',curState='',curDate='',isSub=false,isMissed=false;
 
-// ── Business Day Logic ──
-function getBusinessDate(){
-  const now=new Date();
-  const h=now.getHours();
-  // Before 6 AM = previous day's business
-  if(h<6){
-    const prev=new Date(now);
-    prev.setDate(prev.getDate()-1);
-    return prev;
-  }
-  return now;
-}
-
-function getYesterdayBusiness(){
-  const biz=getBusinessDate();
-  const y=new Date(biz);
-  y.setDate(y.getDate()-1);
-  return y;
-}
-
+function getBusinessDate(){const now=new Date();if(now.getHours()<6){const p=new Date(now);p.setDate(p.getDate()-1);return p;}return now;}
 function fmtDate(d){return d.toISOString().split('T')[0]}
-function fmtDisplay(d){return d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'short'})}
+function fmtShort(d){return d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'short'})}
 function fmtFull(d){return d.toLocaleDateString('en',{weekday:'short',day:'numeric',month:'long',year:'numeric'})}
 
-function buildDateToggle(){
-  const today=getBusinessDate();
-  const yesterday=getYesterdayBusiness();
-  const el=document.getElementById('dateToggle');
-  
-  const nowH=new Date().getHours();
-  const isEarly=nowH<6;
-  
-  el.innerHTML=`
-    <div class="date-opt active" onclick="selectDate(this,'${fmtDate(today)}')">
-      <div class="date-opt-day">${isEarly?'Yesterday':'Today'}</div>
-      <div class="date-opt-date">${fmtDisplay(today)}</div>
-      <div class="date-opt-tag">current</div>
-    </div>
-    <div class="date-opt" onclick="selectDate(this,'${fmtDate(yesterday)}')">
-      <div class="date-opt-day">${isEarly?'Day before':'Yesterday'}</div>
-      <div class="date-opt-date">${fmtDisplay(yesterday)}</div>
-      <div class="date-opt-tag">missed?</div>
-    </div>
-  `;
-  curDate=fmtDate(today);
-}
-
-function selectDate(el,dateStr){
-  document.querySelectorAll('.date-opt').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-  curDate=dateStr;
-}
-
-// ── Helpers ──
 function v(id){return parseFloat(document.getElementById(id).value)||0}
 function s(id,val){document.getElementById(id).textContent=val.toFixed(2)}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
@@ -332,11 +311,36 @@ function calcAll(){
   s('dgHours',v('closeDG')-v('openDG'));
 }
 
+// ── Date selection ──
+function selectFresh(){
+  isMissed=false;
+  document.getElementById('freshOpt').classList.add('active');
+  document.getElementById('missedOpt').classList.remove('active','missed-active');
+  document.getElementById('missedPicker').classList.remove('show');
+  curDate=fmtDate(getBusinessDate());
+}
+
+function selectMissed(){
+  isMissed=true;
+  document.getElementById('missedOpt').classList.add('active','missed-active');
+  document.getElementById('freshOpt').classList.remove('active');
+  document.getElementById('missedPicker').classList.add('show');
+  // Set max date to yesterday's business date
+  const biz=getBusinessDate();
+  const yesterday=new Date(biz);yesterday.setDate(yesterday.getDate()-1);
+  const missedInp=document.getElementById('missedDate');
+  missedInp.max=fmtDate(yesterday);
+  missedInp.value=fmtDate(yesterday);
+  curDate=fmtDate(yesterday);
+}
+
 // ── Init ──
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=localStorage.getItem('gogas_session');
   if(saved){const ss=JSON.parse(saved);curERP=ss.erp;curStation=ss.station;curState=ss.state||'';showDateScreen();}
   document.getElementById('trackerDate').value=fmtDate(getBusinessDate());
+  // Update missed date on change
+  document.getElementById('missedDate').addEventListener('change',function(){curDate=this.value;});
 });
 
 // ── Login ──
@@ -344,18 +348,15 @@ async function handleLogin(){
   const erp=document.getElementById('loginErp').value.trim();
   const pass=document.getElementById('loginPass').value.trim();
   if(!erp||!pass)return;
-  const btn=document.getElementById('btnLogin');
-  const err=document.getElementById('loginErr');
-  const load=document.getElementById('loginLoad');
+  const btn=document.getElementById('btnLogin');const err=document.getElementById('loginErr');const load=document.getElementById('loginLoad');
   btn.disabled=true;err.style.display='none';load.style.display='block';
   try{
     const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'login',erp_code:erp,passkey:pass})});
     const j=await res.json();
-    if(j.status==='success'){
-      curERP=j.erp_code||erp;curStation=j.station_name||'';curState=j.state||'';
+    if(j.status==='success'){curERP=j.erp_code||erp;curStation=j.station_name||'';curState=j.state||'';
       if(document.getElementById('loginRemember').checked)localStorage.setItem('gogas_session',JSON.stringify({erp:curERP,station:curStation,state:curState}));
-      showDateScreen();
-    }else{err.textContent=j.message||'Invalid credentials';err.style.display='block';}
+      showDateScreen();}
+    else{err.textContent=j.message||'Invalid credentials';err.style.display='block';}
   }catch(e){
     if(API==='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){curERP=erp;curStation='Test Station';curState='Test State';localStorage.setItem('gogas_session',JSON.stringify({erp:curERP,station:curStation,state:curState}));showDateScreen();}
     else{err.textContent='Connection error';err.style.display='block';}
@@ -367,7 +368,12 @@ function showDateScreen(){
   document.getElementById('dateHdrErp').textContent='ERP: '+curERP;
   document.getElementById('dateStation').textContent=curStation||curERP;
   document.getElementById('dateState').textContent=curState?'State: '+curState:'';
-  buildDateToggle();
+  const biz=getBusinessDate();
+  document.getElementById('freshDate').textContent=fmtShort(biz);
+  curDate=fmtDate(biz);isMissed=false;
+  document.getElementById('freshOpt').classList.add('active');
+  document.getElementById('missedOpt').classList.remove('active','missed-active');
+  document.getElementById('missedPicker').classList.remove('show');
   show('dateScreen');
 }
 
@@ -376,11 +382,13 @@ function logout(){localStorage.removeItem('gogas_session');curERP='';curStation=
 // ── Report ──
 function openReport(){
   if(!curDate)return;
-  const d=new Date(curDate+'T00:00:00');
-  const fmt=fmtFull(d);
+  if(isMissed){curDate=document.getElementById('missedDate').value;if(!curDate){alert('Please select a date');return;}}
+  const d=new Date(curDate+'T00:00:00');const fmt=fmtFull(d);
   document.getElementById('rptHdrTitle').textContent=curStation||curERP;
   document.getElementById('rptHdrDate').textContent=fmt;
-  document.getElementById('dateBadge').textContent=fmt;
+  const badge=document.getElementById('dateBadge');
+  badge.textContent=isMissed?'MISSED: '+fmt:fmt;
+  badge.classList.toggle('missed-badge',isMissed);
   document.getElementById('erpDisp').textContent=curERP;
   document.getElementById('stDisp').textContent=curStation||'--';
   document.getElementById('stateDisp').textContent=curState||'--';
@@ -420,9 +428,10 @@ async function handleSubmit(){
     cash_sale_amt:parseFloat(document.getElementById('cashSaleAmt').textContent)||0,
     bank_deposit:v('bankDeposit'),cash_in_hand:parseFloat(document.getElementById('cashInHand').textContent)||0,
     dip_reading:v('dipReading'),stock_ltrs:v('stockLtrs'),
-    open_dg:v('openDG'),close_dg:v('closeDG'),dg_hours:parseFloat(document.getElementById('dgHours').textContent)||0};
+    open_dg:v('openDG'),close_dg:v('closeDG'),dg_hours:parseFloat(document.getElementById('dgHours').textContent)||0,
+    is_missed:isMissed};
   try{await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
-    document.getElementById('sTitle').textContent='Submitted to Google Sheet!';
+    document.getElementById('sTitle').textContent=isMissed?'Missed report submitted!':'Submitted to Google Sheet!';
   }catch(e){document.getElementById('sTitle').textContent='Submitted (offline)';}
   document.getElementById('sSub').textContent='Saved at '+timeNow();
   document.getElementById('successBar').classList.add('show');
@@ -434,37 +443,21 @@ async function handleSubmit(){
 function showTracker(){show('trackerScreen')}
 async function loadTracker(){
   const dv=document.getElementById('trackerDate').value;if(!dv)return;
-  const d=new Date(dv+'T00:00:00');
-  const cont=document.getElementById('trackerContent');
+  const d=new Date(dv+'T00:00:00');const cont=document.getElementById('trackerContent');
   cont.innerHTML='<div class="tracker-loading"><span class="spinner"></span> Loading...</div>';
   document.getElementById('trackerSummary').style.display='none';
   try{
-    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
-      action:'tracker',date:d.getDate(),month:d.toLocaleString('en',{month:'long'}),year:d.getFullYear()
-    })});
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'tracker',date:d.getDate(),month:d.toLocaleString('en',{month:'long'}),year:d.getFullYear()})});
     const j=await res.json();
     if(j.status==='success'){
-      document.getElementById('trTotal').textContent=j.total_stations;
-      document.getElementById('trPosted').textContent=j.total_posted;
-      document.getElementById('trMissing').textContent=j.total_not_posted;
+      document.getElementById('trTotal').textContent=j.total_stations;document.getElementById('trPosted').textContent=j.total_posted;document.getElementById('trMissing').textContent=j.total_not_posted;
       document.getElementById('trackerSummary').style.display='flex';
-      let html='';
-      const states=Object.keys(j.states).sort();
-      for(const st of states){
-        const info=j.states[st];
-        const pct=info.total>0?Math.round((info.posted/info.total)*100):0;
-        html+=`<div class="state-card"><div class="state-header" onclick="this.nextElementSibling.classList.toggle('open')">
-          <span class="state-name">${st}</span>
-          <div class="state-counts"><span class="state-posted">${info.posted}/${info.total}</span>
-          ${info.notPosted.length>0?`<span class="state-missing">${info.notPosted.length} missing</span>`:''}</div>
-        </div><div class="state-details">
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
-        if(info.notPosted.length>0){
-          html+='<div style="margin-top:8px;font-weight:600;color:var(--danger)">Missing stations:</div>';
-          for(const m of info.notPosted){html+=`<div class="missing-item">${m.erp} — ${m.station}</div>`;}
-        }else{html+='<div style="margin-top:8px;color:var(--accent);font-weight:600">All stations reported!</div>';}
-        html+='</div></div>';
-      }
+      let html='';const states=Object.keys(j.states).sort();
+      for(const st of states){const info=j.states[st];const pct=info.total>0?Math.round((info.posted/info.total)*100):0;
+        html+=`<div class="state-card"><div class="state-header" onclick="this.nextElementSibling.classList.toggle('open')"><span class="state-name">${st}</span><div class="state-counts"><span class="state-posted">${info.posted}/${info.total}</span>${info.notPosted.length>0?`<span class="state-missing">${info.notPosted.length} missing</span>`:''}</div></div><div class="state-details"><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+        if(info.notPosted.length>0){html+='<div style="margin-top:8px;font-weight:600;color:var(--danger)">Missing stations:</div>';for(const m of info.notPosted){html+=`<div class="missing-item">${m.erp} — ${m.station}</div>`;}}
+        else{html+='<div style="margin-top:8px;color:var(--accent);font-weight:600">All stations reported!</div>';}
+        html+='</div></div>';}
       cont.innerHTML=html;
     }else{cont.innerHTML='<div class="tracker-loading">Error: '+j.message+'</div>';}
   }catch(e){cont.innerHTML='<div class="tracker-loading">Connection error. Is the API configured?</div>';}
